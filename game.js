@@ -16,7 +16,11 @@ const modePvpBtn = document.getElementById('mode-pvp');
 let board;
 let current;
 let gameOver;
+const levelsEl = document.getElementById('levels');
+const levelBtns = document.querySelectorAll('.level');
+
 let vsAi = true;
+let level = 'hard';
 let aiThinking = false;
 
 // --- O'yin mantig'i (taxtani qabul qiladigan sof funksiyalar) ---
@@ -60,6 +64,15 @@ function bestMove(b) {
     }
   }
   return move;
+}
+
+// Qiyinlik: AI to'g'ri (minimax) yurish qilish ehtimoli
+const SMARTNESS = { easy: 0, medium: 0.6, hard: 1 };
+
+function chooseMove(b, level) {
+  if (Math.random() < SMARTNESS[level]) return bestMove(b);
+  const moves = emptyCells(b);
+  return moves[Math.floor(Math.random() * moves.length)];
 }
 
 // --- Interfeys ---
@@ -115,7 +128,7 @@ function aiTurn() {
   render();
   setTimeout(() => {
     aiThinking = false;
-    play(bestMove(board));
+    play(chooseMove(board, level));
   }, 400);
 }
 
@@ -130,8 +143,17 @@ function setMode(ai) {
   vsAi = ai;
   modeAiBtn.classList.toggle('active', ai);
   modePvpBtn.classList.toggle('active', !ai);
+  levelsEl.hidden = !ai;
   start();
 }
+
+function setLevel(l) {
+  level = l;
+  levelBtns.forEach((b) => b.classList.toggle('active', b.dataset.level === l));
+  start();
+}
+
+levelBtns.forEach((b) => b.addEventListener('click', () => setLevel(b.dataset.level)));
 
 cells.forEach((cell) => cell.addEventListener('click', handleClick));
 restartBtn.addEventListener('click', start);
