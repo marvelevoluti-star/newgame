@@ -55,6 +55,44 @@ body {
   display: none;
 }
 
+.scoreboard {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.score {
+  min-width: 96px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #2d2d44;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.8rem;
+}
+
+.score strong {
+  font-size: 1.6rem;
+}
+
+.score.x strong { color: #ff6b6b; }
+.score.o strong { color: #4ecdc4; }
+.score.draw strong { color: #f7d046; }
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.restart.secondary {
+  background: transparent;
+  border: 2px solid #6c5ce7;
+}
+
 .status {
   font-size: 1.25rem;
   margin: 8px 0 20px;

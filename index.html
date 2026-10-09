@@ -18,6 +18,11 @@
       <button class="level" data-level="medium">O'rta</button>
       <button class="level active" data-level="hard">Qiyin</button>
     </div>
+    <div class="scoreboard">
+      <div class="score x"><span id="label-x">Siz (X)</span><strong id="score-x">0</strong></div>
+      <div class="score draw"><span>Durang</span><strong id="score-draw">0</strong></div>
+      <div class="score o"><span id="label-o">Kompyuter (O)</span><strong id="score-o">0</strong></div>
+    </div>
     <p id="status" class="status">Navbat: X</p>
 
     <div id="board" class="board">
@@ -32,7 +37,10 @@
       <button class="cell" data-index="8"></button>
     </div>
 
-    <button id="restart" class="restart">Qaytadan boshlash</button>
+    <div class="actions">
+      <button id="restart" class="restart">Yangi o'yin</button>
+      <button id="reset-score" class="restart secondary">Hisobni nolga tushirish</button>
+    </div>
   </main>
   <script src="game.js"></script>
 </body>

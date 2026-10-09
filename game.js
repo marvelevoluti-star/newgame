@@ -12,6 +12,14 @@ const statusEl = document.getElementById('status');
 const restartBtn = document.getElementById('restart');
 const modeAiBtn = document.getElementById('mode-ai');
 const modePvpBtn = document.getElementById('mode-pvp');
+const resetScoreBtn = document.getElementById('reset-score');
+const scoreEls = {
+  X: document.getElementById('score-x'),
+  O: document.getElementById('score-o'),
+  draw: document.getElementById('score-draw'),
+};
+const labelX = document.getElementById('label-x');
+const labelO = document.getElementById('label-o');
 
 let board;
 let current;
@@ -22,6 +30,8 @@ const levelBtns = document.querySelectorAll('.level');
 let vsAi = true;
 let level = 'hard';
 let aiThinking = false;
+let aiTimer = null;
+const score = { X: 0, O: 0, draw: 0 };
 
 // --- O'yin mantig'i (taxtani qabul qiladigan sof funksiyalar) ---
 
@@ -85,7 +95,19 @@ function render() {
   });
 }
 
+function renderScore() {
+  Object.keys(score).forEach((k) => (scoreEls[k].textContent = score[k]));
+  labelX.textContent = vsAi ? 'Siz (X)' : 'X';
+  labelO.textContent = vsAi ? 'Kompyuter (O)' : 'O';
+}
+
+function resetScore() {
+  score.X = score.O = score.draw = 0;
+  renderScore();
+}
+
 function start() {
+  clearTimeout(aiTimer);
   board = Array(9).fill(null);
   current = 'X';
   gameOver = false;
@@ -98,6 +120,8 @@ function finishIfOver() {
   const line = winningLine(board);
   if (line) {
     gameOver = true;
+    score[current]++;
+    renderScore();
     statusEl.textContent = vsAi
       ? (current === AI ? 'Kompyuter yutdi!' : 'Siz yutdingiz!')
       : `${current} g'alaba qozondi!`;
@@ -107,6 +131,8 @@ function finishIfOver() {
   }
   if (board.every(Boolean)) {
     gameOver = true;
+    score.draw++;
+    renderScore();
     statusEl.textContent = 'Durang!';
     render();
     return true;
@@ -126,7 +152,7 @@ function aiTurn() {
   aiThinking = true;
   statusEl.textContent = 'Kompyuter o\'ylamoqda...';
   render();
-  setTimeout(() => {
+  aiTimer = setTimeout(() => {
     aiThinking = false;
     play(chooseMove(board, level));
   }, 400);
@@ -144,12 +170,14 @@ function setMode(ai) {
   modeAiBtn.classList.toggle('active', ai);
   modePvpBtn.classList.toggle('active', !ai);
   levelsEl.hidden = !ai;
+  resetScore();
   start();
 }
 
 function setLevel(l) {
   level = l;
   levelBtns.forEach((b) => b.classList.toggle('active', b.dataset.level === l));
+  resetScore();
   start();
 }
 
@@ -157,7 +185,9 @@ levelBtns.forEach((b) => b.addEventListener('click', () => setLevel(b.dataset.le
 
 cells.forEach((cell) => cell.addEventListener('click', handleClick));
 restartBtn.addEventListener('click', start);
+resetScoreBtn.addEventListener('click', resetScore);
 modeAiBtn.addEventListener('click', () => setMode(true));
 modePvpBtn.addEventListener('click', () => setMode(false));
 
+renderScore();
 start();
